@@ -2,6 +2,7 @@
 using System.Linq;
 using System.IO;
 using GeoCoordinatePortable;
+using Microsoft.Extensions.Configuration;
 
 namespace LoggingKata
 {
@@ -11,7 +12,15 @@ namespace LoggingKata
         const string csvPath = "TacoBell-US-AL.csv";
 
         static void Main(string[] args)
-        { 
+        {
+            #region Configuration
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+            string connString = config.GetConnectionString("Default");
+            #endregion
+
             var lines = File.ReadAllLines(csvPath); //creates new string[] 'lines' that calls the File class and uses 'Read All Lines'
                                                     //method to read all lines in the file path and convert them to a string[]
 
