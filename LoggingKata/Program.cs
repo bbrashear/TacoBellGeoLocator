@@ -3,6 +3,7 @@ using System.Linq;
 using System.IO;
 using GeoCoordinatePortable;
 using Microsoft.Extensions.Configuration;
+using MySql.Data.MySqlClient;
 
 namespace LoggingKata
 {
@@ -19,7 +20,11 @@ namespace LoggingKata
                 .AddJsonFile("appsettings.json")
                 .Build();
             string connString = config.GetConnectionString("Default");
+            var tacoRepo = new TacoRepository(new MySqlConnection(connString));
             #endregion
+
+            Console.WriteLine("Would you like to read from a CSV file or a Database?");
+            string answer = Console.ReadLine().ToLower();
 
             var lines = File.ReadAllLines(csvPath); //creates new string[] 'lines' that calls the File class and uses 'Read All Lines'
                                                     //method to read all lines in the file path and convert them to a string[]
@@ -28,7 +33,15 @@ namespace LoggingKata
 
             var locations = lines.Select(parser.Parse).ToArray(); //creates a new ITrackable instance 'locations', parses each 
                                                                   //line, and returns it in an ITrackable array
-            
+           
+            //populates SQL database with Taco Bell locations from CSV file
+            //commented out to not duplicate data
+
+            //foreach(var location in locations )
+            //{
+            //    tacoRepo.CreateTacoBells(location);
+            //}
+
             //Empty variables to be used later
             ITrackable tacoBell1 = new TacoBell();
             ITrackable tacoBell2 = new TacoBell();
